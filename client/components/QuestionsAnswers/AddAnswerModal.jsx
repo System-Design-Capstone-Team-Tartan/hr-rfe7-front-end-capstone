@@ -55,6 +55,7 @@ class AddAnswer extends React.Component {
     });
   }
 
+  //TODO: understand where this is posting for answer's photos
   upload(e) {
     if (e.target.files[0]) {
       const data = new FormData();

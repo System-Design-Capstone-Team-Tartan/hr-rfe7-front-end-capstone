@@ -41,16 +41,18 @@ export const getAPICallsWithinLastMinute = async () => {
   return arr.filter((x) => x > now - 60).length;
 };
 
+// TODO: to update host
 const host = `https://app-hrsei-api.herokuapp.com/api/fec2/${campus}`;
+const qaHost = '//localhost:3001';
 
 const api = {
   /******************************************************************************
    * Get All
    ******************************************************************************/
 
-  getAllData: async function (params = {}, useCache = true) {
+  getAllData: async function (params = {}, useCache = false) {
     const { product_id } = params;
-
+    console.log(product_id);
     let obj = {};
     obj.currentProduct = await this.getProductData({ product_id });
     obj.reviewData = await this.getReviewData({ product_id }, useCache);
@@ -272,13 +274,14 @@ const api = {
 
   getQuestions: function (params = {}) {
     const { product_id, page = 1, count = 5 } = params;
+    console.log('Product ID passed in ', product_id);
     if (!product_id) {
       return Promise.reject(new Error('must provide product_id'));
     }
     const url = `/qa/questions?product_id=${product_id}&count=${count}&page=${page}`;
 
     return axios
-      .get(host + url, headers)
+      .get(qaHost + url, headers)
       .then((res) => Promise.resolve(res.data))
       .catch((err) => Promise.reject(new Error(err)));
   },
@@ -295,12 +298,12 @@ const api = {
     }
 
     return axios
-      .get(host + '/qa/questions/' + question_id + '/answers', headers)
+      .get(qaHost + '/qa/questions/' + question_id + '/answers', headers)
       .then((res) => Promise.resolve(res.data))
       .catch((err) => Promise.reject(new Error(err)));
   },
 
-  getQuestionData: async function (params = {}, useCache = true) {
+  getQuestionData: async function (params = {}, useCache = false) {
     const { product_id, count = 100, page = 1 } = params;
     const url = `/qa/questions?product_id=${product_id}&count=${count}&page=${page}`;
 
@@ -311,7 +314,7 @@ const api = {
           return cachedQuestions;
         }
       }
-      let questionRes = await axios.get(host + url, headers);
+      let questionRes = await axios.get(qaHost + url, headers);
       await logAPICall();
       await cache('questions', product_id, questionRes.data);
       return questionRes.data;
@@ -333,7 +336,7 @@ const api = {
       return Promise.reject(new Error('params must contain only {body, name, email, product_id}'));
     }
 
-    const url = host + '/qa/questions';
+    const url = qaHost + '/qa/questions';
     return axios
       .post(url, params, headers)
       .then((res) => Promise.resolve(res))
@@ -352,7 +355,7 @@ const api = {
     if (!question_id || !body || !name || !email || !photos || Object.keys(params).length !== 5) {
       return Promise.reject(new Error('params must contain only {question_id, body, name, email}'));
     }
-    let url = `${host}/qa/questions/${question_id}/answers`;
+    let url = `${qaHost}/qa/questions/${question_id}/answers`;
     delete params.question_id;
     return axios
       .post(url, params, headers)
@@ -368,7 +371,7 @@ const api = {
     if (!question_id) {
       return Promise.reject(new Error('params must contain {question_id}'));
     }
-    let url = `${host}/qa/questions/${question_id}/helpful`;
+    let url = `${qaHost}/qa/questions/${question_id}/helpful`;
 
     return axios
       .put(url, {}, headers)
@@ -384,7 +387,7 @@ const api = {
     if (!question_id) {
       return Promise.reject(new Error('params must contain {question_id}'));
     }
-    let url = `${host}/qa/questions/${question_id}/report`;
+    let url = `${qaHost}/qa/questions/${question_id}/report`;
     return axios
       .put(url, {}, headers)
       .then((res) => Promise.resolve(res))
@@ -399,7 +402,7 @@ const api = {
     if (!answer_id) {
       return Promise.reject(new Error('params must contain {answer_id}'));
     }
-    let url = `${host}/qa/answers/${answer_id}/helpful`;
+    let url = `${qaHost}/qa/answers/${answer_id}/helpful`;
     return axios
       .put(url, {}, headers)
       .then((res) => Promise.resolve(res))
@@ -414,7 +417,7 @@ const api = {
     if (!answer_id) {
       return Promise.reject(new Error('params must contain {answer_id}'));
     }
-    let url = `${host}/qa/answers/${answer_id}/report`;
+    let url = `${qaHost}/qa/answers/${answer_id}/report`;
     return axios
       .put(url, {}, headers)
       .then((res) => Promise.resolve(res))

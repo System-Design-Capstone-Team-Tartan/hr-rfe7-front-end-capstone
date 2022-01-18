@@ -19,12 +19,14 @@ export const MarkAnswerHelpfulAndReported = ({answer}) => {
     setAlreadyReported(markedReported.includes(answer.id));
   }, [answer.id]);
 
+  // TODO: check this PUT/PATCH is correct
   let MarkAnswerHelpful = () => {
     ls.set('markedAnswers', [...markedAnswers, answer.id]);
     api.markAnswerAsHelpful({answer_id: answer.id});
     setAlreadyMarked(true);
   };
 
+  // TODO: check this PUT/PATCH is correct
   let MarkAnswerReported = () => {
     ls.get('markedReported', [...markedReported, answer.id]);
     api.reportAnswer({answer_id: answer.id});
@@ -56,6 +58,7 @@ export const MarkQuestionHelpfulAndReported = ({question}) => {
     setAlreadyMarked(markedQuestions.includes(question.question_id));
   }, [question.question_id]);
 
+  // TODO: check this PUT/PATCH is correct
   let MarkQuestionHelpful = () => {
     ls.set('markedQuestions', [...markedQuestions, question.question_id]);
     api.markQuestionAsHelpful({question_id: question.question_id});
