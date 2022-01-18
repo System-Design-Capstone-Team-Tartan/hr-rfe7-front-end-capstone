@@ -60,6 +60,7 @@ class AddQuestion extends React.Component {
 
     let currentErrors = formValidation(formData);
 
+    // TODO: Ensure secondary get request makes sense with page and count number
     if (Object.keys(currentErrors).length === 0) {
       api.addQuestion(formData)
         .then(() => {

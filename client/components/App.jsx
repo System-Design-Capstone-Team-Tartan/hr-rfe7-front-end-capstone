@@ -10,7 +10,7 @@ import { Header } from './Header/Header';
 import { Loader } from './Shared/Loader';
 import api from '../api';
 
-const backgroundCacher = new Worker(new URL('../worker.js', import.meta.url));
+// const backgroundCacher = new Worker(new URL('../worker.js', import.meta.url));
 
 class App extends Component {
   constructor(props) {
@@ -41,19 +41,20 @@ class App extends Component {
   }
 
   fetchQuestionData({ product_id, page = 1, count = 100 }) {
+    console.log('test');
     api.getQuestionData({ product_id, page, count }, false).then((res) => {
       this.setState({ questionData: res });
     });
   }
 
   componentDidMount() {
-    backgroundCacher.addEventListener('message', function (e) {
-      console.log('Message from Worker: ' + e.data);
-    });
+    // backgroundCacher.addEventListener('message', function (e) {
+    //   console.log('Message from Worker: ' + e.data);
+    // });
 
     api.getProducts({ count: 25 }).then((products) => {
       this.setState({ products: products }, () => {
-        backgroundCacher.postMessage(products);
+        // backgroundCacher.postMessage(products);
         this.updateProduct(products[0].id);
       });
     });
